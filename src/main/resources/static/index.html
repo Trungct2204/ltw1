@@ -2,204 +2,698 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý sinh viên</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Sinh Viên</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-
-    <!-- Custom CSS -->
     <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #0a0f1e;
+            --surface: #111827;
+            --surface2: #1a2236;
+            --border: rgba(255,255,255,0.07);
+            --accent: #38bdf8;
+            --accent2: #818cf8;
+            --accent3: #34d399;
+            --danger: #f87171;
+            --warning: #fbbf24;
+            --text: #f1f5f9;
+            --muted: #64748b;
+            --glow: 0 0 40px rgba(56,189,248,0.15);
+        }
+
         body {
-            background: linear-gradient(135deg, #eef2f7, #dbeafe);
+            font-family: 'Sora', sans-serif;
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        .app-card {
-            background: #fff;
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 10%, rgba(56,189,248,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 50% at 80% 80%, rgba(129,140,248,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 50% 50%, rgba(52,211,153,0.04) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 48px 24px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+            animation: fadeDown 0.6s ease both;
+        }
+
+        .header-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: rgba(56,189,248,0.1);
+            border: 1px solid rgba(56,189,248,0.25);
+            border-radius: 999px;
+            padding: 5px 16px;
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: clamp(28px, 5vw, 42px);
+            font-weight: 800;
+            background: linear-gradient(135deg, #f1f5f9 30%, var(--accent) 70%, var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+            letter-spacing: -1px;
+        }
+
+        .header p {
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+            animation: fadeUp 0.6s 0.1s ease both;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            padding: 24px;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: border-color 0.2s, transform 0.2s;
         }
 
-        h3, h4 {
+        .stat-card:hover {
+            border-color: rgba(56,189,248,0.3);
+            transform: translateY(-2px);
+        }
+
+        .stat-icon {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .stat-icon.blue { background: rgba(56,189,248,0.12); }
+        .stat-icon.purple { background: rgba(129,140,248,0.12); }
+        .stat-icon.green { background: rgba(52,211,153,0.12); }
+
+        .stat-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+        .stat-value { font-size: 22px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+
+        .search-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            animation: fadeUp 0.6s 0.2s ease both;
+        }
+
+        .search-wrap {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-wrap svg {
+            position: absolute;
+            left: 16px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            pointer-events: none;
+        }
+
+        .search-wrap input {
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 13px 16px 13px 46px;
+            color: var(--text);
+            font-family: 'Sora', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .search-wrap input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(56,189,248,0.1);
+        }
+
+        .search-wrap input::placeholder { color: var(--muted); }
+
+        .table-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 32px;
+            animation: fadeUp 0.6s 0.25s ease both;
+            box-shadow: var(--glow);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead tr {
+            background: linear-gradient(90deg, rgba(56,189,248,0.08), rgba(129,140,248,0.08));
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            padding: 14px 20px;
+            font-size: 11px;
             font-weight: 700;
-            color: #1e293b;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-align: left;
         }
 
-        .table thead {
-            background: linear-gradient(90deg, #2563eb, #1d4ed8);
-            color: white;
+        th:last-child { text-align: center; }
+
+        td {
+            padding: 14px 20px;
+            font-size: 13.5px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
         }
 
-        .table tbody tr:hover {
-            background-color: #f1f5f9;
-            transition: 0.2s;
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr { transition: background 0.15s; }
+        tbody tr:hover { background: rgba(255,255,255,0.03); }
+
+        .td-id {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--accent);
+            font-weight: 500;
         }
 
-        .form-control, .form-select {
+        .td-name { font-weight: 600; }
+        .td-email { color: var(--muted); font-size: 13px; }
+        .td-age { font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+
+        .badge-gender {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 12px;
+            border-radius: 999px;
+        }
+
+        .badge-nam { background: rgba(56,189,248,0.12); color: var(--accent); border: 1px solid rgba(56,189,248,0.2); }
+        .badge-nu { background: rgba(251,191,36,0.1); color: var(--warning); border: 1px solid rgba(251,191,36,0.2); }
+        .badge-khac { background: rgba(129,140,248,0.1); color: var(--accent2); border: 1px solid rgba(129,140,248,0.2); }
+
+        .td-actions { text-align: center; }
+        .action-wrap { display: flex; gap: 8px; justify-content: center; }
+
+        .btn-icon {
+            width: 34px; height: 34px;
             border-radius: 10px;
-        }
-
-        .btn {
-            border-radius: 10px;
-            padding: 6px 14px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(90deg, #2563eb, #1d4ed8);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
             border: none;
+            font-size: 15px;
+            transition: transform 0.15s, opacity 0.15s;
         }
 
-        .btn-warning {
-            background: linear-gradient(90deg, #f59e0b, #d97706);
+        .btn-icon:hover { transform: scale(1.1); opacity: 0.9; }
+
+        .btn-edit {
+            background: rgba(251,191,36,0.12);
+            color: var(--warning);
+            border: 1px solid rgba(251,191,36,0.2);
+        }
+
+        .btn-del {
+            background: rgba(248,113,113,0.1);
+            color: var(--danger);
+            border: 1px solid rgba(248,113,113,0.2);
+        }
+
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .empty-state .emoji { font-size: 40px; display: block; margin-bottom: 12px; }
+
+        .form-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            animation: fadeUp 0.6s 0.3s ease both;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+        }
+
+        .form-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text);
+        }
+
+        .form-title .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .stats-bar { grid-template-columns: 1fr; }
+        }
+
+        .field-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .field-input, .field-select {
+            width: 100%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: var(--text);
+            font-family: 'Sora', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            -webkit-appearance: none;
+        }
+
+        .field-input:focus, .field-select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(56,189,248,0.1);
+        }
+
+        .field-select option { background: var(--surface2); }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn-save, .btn-cancel {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-family: 'Sora', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
             border: none;
+            transition: transform 0.15s, box-shadow 0.2s;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, var(--accent), #0ea5e9);
+            color: #0a0f1e;
+            box-shadow: 0 4px 20px rgba(56,189,248,0.3);
+        }
+
+        .btn-save:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 28px rgba(56,189,248,0.4);
+        }
+
+        .btn-cancel {
+            background: var(--surface2);
+            color: var(--muted);
+            border: 1px solid var(--border);
+        }
+
+        .btn-cancel:hover { color: var(--text); border-color: rgba(255,255,255,0.15); }
+
+        .toast {
+            position: fixed;
+            bottom: 32px; right: 32px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 20px;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            transform: translateY(80px);
+            opacity: 0;
+            transition: transform 0.35s cubic-bezier(.22,1,.36,1), opacity 0.35s;
+            z-index: 999;
+        }
+
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { border-color: rgba(52,211,153,0.3); }
+        .toast.success .toast-dot { background: var(--accent3); }
+        .toast.error { border-color: rgba(248,113,113,0.3); }
+        .toast.error .toast-dot { background: var(--danger); }
+
+        .toast-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        tr { animation: rowIn 0.3s ease both; }
+
+        @keyframes rowIn {
+            from { opacity: 0; transform: translateX(-8px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .overlay.open { display: flex; }
+
+        .dialog {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 360px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: popIn 0.3s cubic-bezier(.22,1,.36,1);
+        }
+
+        @keyframes popIn {
+            from { opacity:0; transform: scale(0.9); }
+            to { opacity:1; transform: scale(1); }
+        }
+
+        .dialog-icon { font-size: 36px; margin-bottom: 16px; display: block; }
+        .dialog h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+        .dialog p { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+        .dialog-btns { display: flex; gap: 12px; }
+
+        .dialog-btns button {
+            flex: 1;
+            padding: 11px;
+            border-radius: 12px;
+            font-family: 'Sora', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.15s;
+        }
+
+        .dialog-btns button:hover { transform: scale(1.03); }
+
+        .btn-confirm-del {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
             color: #fff;
         }
 
-        .btn-danger {
-            background: linear-gradient(90deg, #ef4444, #dc2626);
-            border: none;
-        }
-
-        .search-box {
-            border-radius: 999px;
-            padding-left: 20px;
-        }
-
-        .divider {
-            height: 1px;
-            background: #e5e7eb;
-            margin: 30px 0;
+        .btn-confirm-cancel {
+            background: var(--surface2);
+            color: var(--muted);
+            border: 1px solid var(--border);
         }
     </style>
 </head>
 
-<body class="container py-5">
+<body>
 
-<div class="app-card">
+<div class="overlay" id="overlay">
+    <div class="dialog">
+        <span class="dialog-icon">🗑️</span>
+        <h3>Xác nhận xóa</h3>
+        <p>Bạn có chắc muốn xóa sinh viên này không? Hành động này không thể hoàn tác.</p>
+        <div class="dialog-btns">
+            <button class="btn-confirm-cancel" onclick="closeDialog()">Hủy bỏ</button>
+            <button class="btn-confirm-del" onclick="confirmDelete()">Xóa</button>
+        </div>
+    </div>
+</div>
 
-    <h3 class="mb-4 text-center">📚 QUẢN LÝ SINH VIÊN</h3>
+<div class="toast" id="toast">
+    <span class="toast-dot" id="toast-dot"></span>
+    <span id="toast-msg">Lưu thành công!</span>
+</div>
 
-    <!-- Tìm kiếm -->
-    <input type="text" id="search"
-           class="form-control mb-4 search-box"
-           placeholder="🔍 Tìm theo tên sinh viên..."
-           onkeyup="searchStudent()">
+<div class="wrapper">
 
-    <!-- Bảng -->
-    <div class="table-responsive">
-        <table class="table table-bordered align-middle text-center">
+    <div class="header">
+        <span class="header-badge">Hệ thống quản lý</span>
+        <h1>Quản Lý Sinh Viên</h1>
+        <p>Theo dõi và quản lý thông tin sinh viên toàn trường</p>
+    </div>
+
+    <div class="stats-bar">
+        <div class="stat-card">
+            <div class="stat-icon blue">🎓</div>
+            <div>
+                <div class="stat-label">Tổng sinh viên</div>
+                <div class="stat-value" id="stat-total">0</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon purple">👨</div>
+            <div>
+                <div class="stat-label">Sinh viên Nam</div>
+                <div class="stat-value" id="stat-nam">0</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon green">👩</div>
+            <div>
+                <div class="stat-label">Sinh viên Nữ</div>
+                <div class="stat-value" id="stat-nu">0</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="search-row">
+        <div class="search-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input type="text" id="search" placeholder="Tìm kiếm theo tên sinh viên..." oninput="searchStudent()">
+        </div>
+    </div>
+
+    <div class="table-card">
+        <table>
             <thead>
             <tr>
                 <th>ID</th>
-                <th>Tên</th>
+                <th>Họ & Tên</th>
                 <th>Email</th>
                 <th>Tuổi</th>
                 <th>Giới tính</th>
                 <th>Hành động</th>
             </tr>
             </thead>
-            <tbody id="studentTable"></tbody>
+            <tbody id="studentTable">
+            <tr><td colspan="6">
+                <div class="empty-state">
+                    <span class="emoji">📭</span>
+                    Đang tải dữ liệu...
+                </div>
+            </td></tr>
+            </tbody>
         </table>
     </div>
 
-    <div class="divider"></div>
-
-    <h4 id="formTitle" class="mb-3">➕ Thêm sinh viên</h4>
-
-    <!-- Form -->
-    <input type="hidden" id="id">
-
-    <div class="row g-3">
-        <div class="col-md-6">
-            <input id="name" class="form-control" placeholder="Tên sinh viên">
+    <div class="form-card">
+        <div class="form-title">
+            <span class="dot"></span>
+            <span id="formTitle">Thêm sinh viên mới</span>
         </div>
-        <div class="col-md-6">
-            <input id="email" class="form-control" placeholder="Email">
-        </div>
-        <div class="col-md-6">
-            <input id="age" type="number" class="form-control" placeholder="Tuổi">
-        </div>
-        <div class="col-md-6">
-            <select id="gender" class="form-select">
-                <option value="">-- Chọn giới tính --</option>
-                <option value="Nam">Nam</option>
-                <option value="Nữ">Nữ</option>
-                <option value="Khác">Khác</option>
-            </select>
-        </div>
-    </div>
 
-    <div class="mt-4 text-end">
-        <button class="btn btn-primary me-2" onclick="saveStudent()">💾 Lưu</button>
-        <button class="btn btn-secondary" onclick="resetForm()">↩ Hủy</button>
+        <input type="hidden" id="id">
+
+        <div class="form-grid">
+            <div>
+                <label class="field-label">Họ & Tên</label>
+                <input id="name" class="field-input" placeholder="Nguyễn Văn A">
+            </div>
+            <div>
+                <label class="field-label">Email</label>
+                <input id="email" class="field-input" placeholder="example@email.com">
+            </div>
+            <div>
+                <label class="field-label">Tuổi</label>
+                <input id="age" type="number" class="field-input" placeholder="18" min="1" max="100">
+            </div>
+            <div>
+                <label class="field-label">Giới tính</label>
+                <select id="gender" class="field-select">
+                    <option value="">-- Chọn giới tính --</option>
+                    <option value="Nam">Nam</option>
+                    <option value="Nữ">Nữ</option>
+                    <option value="Khác">Khác</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn-cancel" onclick="resetForm()">↩ Hủy</button>
+            <button class="btn-save" onclick="saveStudent()">💾 Lưu sinh viên</button>
+        </div>
     </div>
 
 </div>
 
 <script>
 const API = "/api/students";
+let deleteId = null;
+let allData = [];
 
 function loadStudents() {
     fetch(API)
         .then(res => res.json())
-        .then(data => renderTable(data));
+        .then(data => {
+            allData = data;
+            renderTable(data);
+            updateStats(data);
+        });
+}
+
+function updateStats(data) {
+    document.getElementById('stat-total').textContent = data.length;
+    document.getElementById('stat-nam').textContent = data.filter(s => s.gender === 'Nam').length;
+    document.getElementById('stat-nu').textContent = data.filter(s => s.gender === 'Nữ').length;
 }
 
 function renderTable(data) {
-    let html = "";
-    data.forEach(s => {
-        html += `
-        <tr>
-            <td>${s.id}</td>
-            <td>${s.name}</td>
-            <td>${s.email}</td>
-            <td>${s.age}</td>
-            <td>${s.gender}</td>
-            <td>
-                <button class="btn btn-warning btn-sm me-1"
-                    onclick="editStudent(${s.id}, '${s.name}', '${s.email}', ${s.age}, '${s.gender}')">
-                    ✏️
-                </button>
-                <button class="btn btn-danger btn-sm"
-                    onclick="deleteStudent(${s.id})">
-                    🗑
-                </button>
+    const tbody = document.getElementById("studentTable");
+    if (!data.length) {
+        tbody.innerHTML = `<tr><td colspan="6">
+            <div class="empty-state">
+                <span class="emoji">🔍</span>
+                Không tìm thấy sinh viên nào
+            </div>
+        </td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = data.map((s, i) => {
+        const badgeClass = s.gender === 'Nam' ? 'badge-nam' : s.gender === 'Nữ' ? 'badge-nu' : 'badge-khac';
+        return `
+        <tr style="animation-delay:${i * 40}ms">
+            <td class="td-id">#${s.id}</td>
+            <td class="td-name">${s.name}</td>
+            <td class="td-email">${s.email}</td>
+            <td class="td-age">${s.age}</td>
+            <td><span class="badge-gender ${badgeClass}">${s.gender}</span></td>
+            <td class="td-actions">
+                <div class="action-wrap">
+                    <button class="btn-icon btn-edit"
+                        onclick="editStudent(${s.id}, '${s.name}', '${s.email}', ${s.age}, '${s.gender}')">✏️</button>
+                    <button class="btn-icon btn-del"
+                        onclick="openDialog(${s.id})">🗑</button>
+                </div>
             </td>
         </tr>`;
-    });
-    document.getElementById("studentTable").innerHTML = html;
+    }).join('');
 }
 
 function saveStudent() {
     const id = document.getElementById("id").value;
     const student = {
-        name: document.getElementById("name").value,
-        email: document.getElementById("email").value,
+        name: document.getElementById("name").value.trim(),
+        email: document.getElementById("email").value.trim(),
         age: document.getElementById("age").value,
         gender: document.getElementById("gender").value
     };
 
-    if (id) {
-        fetch(`${API}/${id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(student)
-        }).then(() => {
-            resetForm();
-            loadStudents();
-        });
-    } else {
-        fetch(API, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(student)
-        }).then(() => {
-            resetForm();
-            loadStudents();
-        });
+    if (!student.name || !student.email || !student.age || !student.gender) {
+        showToast("Vui lòng điền đầy đủ thông tin!", "error");
+        return;
     }
+
+    const url = id ? `${API}/${id}` : API;
+    const method = id ? "PUT" : "POST";
+
+    fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(student)
+    }).then(() => {
+        showToast(id ? "Cập nhật thành công!" : "Thêm sinh viên thành công!", "success");
+        resetForm();
+        loadStudents();
+    });
 }
 
 function editStudent(id, name, email, age, gender) {
@@ -208,21 +702,35 @@ function editStudent(id, name, email, age, gender) {
     document.getElementById("email").value = email;
     document.getElementById("age").value = age;
     document.getElementById("gender").value = gender;
-    document.getElementById("formTitle").innerText = "✏️ Cập nhật sinh viên";
+    document.getElementById("formTitle").textContent = "Cập nhật thông tin sinh viên";
+    document.querySelector('.dot').style.background = 'var(--warning)';
+    document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-function deleteStudent(id) {
-    if (!confirm("Bạn có chắc muốn xóa?")) return;
-    fetch(`${API}/${id}`, { method: "DELETE" })
-        .then(() => loadStudents());
+function openDialog(id) {
+    deleteId = id;
+    document.getElementById('overlay').classList.add('open');
 }
 
+function closeDialog() {
+    document.getElementById('overlay').classList.remove('open');
+    deleteId = null;
+}
+
+function confirmDelete() {
+    if (!deleteId) return;
+    fetch(`${API}/${deleteId}`, { method: "DELETE" })
+        .then(() => {
+            showToast("Đã xóa sinh viên!", "error");
+            closeDialog();
+            loadStudents();
+        });
+}
 
 function searchStudent() {
-    const name = document.getElementById("search").value;
-    fetch(`${API}/search?name=${name}`)
-        .then(res => res.json())
-        .then(data => renderTable(data));
+    const q = document.getElementById("search").value.toLowerCase();
+    const filtered = allData.filter(s => s.name.toLowerCase().includes(q));
+    renderTable(filtered);
 }
 
 function resetForm() {
@@ -231,11 +739,20 @@ function resetForm() {
     document.getElementById("email").value = "";
     document.getElementById("age").value = "";
     document.getElementById("gender").value = "";
-    document.getElementById("formTitle").innerText = "➕ Thêm sinh viên";
+    document.getElementById("formTitle").textContent = "Thêm sinh viên mới";
+    document.querySelector('.dot').style.background = 'var(--accent)';
+}
+
+function showToast(msg, type = "success") {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    t.className = `toast ${type}`;
+    void t.offsetWidth;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
 }
 
 loadStudents();
 </script>
-
 </body>
 </html>
