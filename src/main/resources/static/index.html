@@ -527,14 +527,14 @@
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon purple">👨</div>
+            <div class="stat-icon purple"></div>
             <div>
                 <div class="stat-label">Sinh viên Nam</div>
                 <div class="stat-value" id="stat-nam">0</div>
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon green">👩</div>
+            <div class="stat-icon green"></div>
             <div>
                 <div class="stat-label">Sinh viên Nữ</div>
                 <div class="stat-value" id="stat-nu">0</div>
@@ -607,8 +607,8 @@
         </div>
 
         <div class="form-actions">
-            <button class="btn-cancel" onclick="resetForm()">↩ Hủy</button>
-            <button class="btn-save" onclick="saveStudent()">💾 Lưu sinh viên</button>
+            <button class="btn-cancel" onclick="resetForm()"> Hủy</button>
+            <button class="btn-save" onclick="saveStudent()"> Lưu sinh viên</button>
         </div>
     </div>
 
@@ -640,7 +640,7 @@ function renderTable(data) {
     if (!data.length) {
         tbody.innerHTML = `<tr><td colspan="6">
             <div class="empty-state">
-                <span class="emoji">🔍</span>
+                <span class="emoji"></span>
                 Không tìm thấy sinh viên nào
             </div>
         </td></tr>`;
