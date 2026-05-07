@@ -495,7 +495,7 @@
 
 <div class="overlay" id="overlay">
     <div class="dialog">
-        <span class="dialog-icon"></span>
+        <span class="dialog-icon">Xóa</span>
         <h3>Xác nhận xóa</h3>
         <p>Bạn có chắc muốn xóa sinh viên này không? Hành động này không thể hoàn tác.</p>
         <div class="dialog-btns">
@@ -659,7 +659,7 @@ function renderTable(data) {
             <td class="td-actions">
                 <div class="action-wrap">
                     <button class="btn-icon btn-edit"
-                        onclick="editStudent(${s.id}, '${s.name}', '${s.email}', ${s.age}, '${s.gender}')"></button>
+                        onclick="editStudent(${s.id}, '${s.name}', '${s.email}', ${s.age}, '${s.gender}')">Sửa</button>
                     <button class="btn-icon btn-del"
                         onclick="openDialog(${s.id})"></button>
                 </div>
