@@ -495,7 +495,7 @@
 
 <div class="overlay" id="overlay">
     <div class="dialog">
-        <span class="dialog-icon">Xóa</span>
+        <span class="dialog-icon">🗑️</span>
         <h3>Xác nhận xóa</h3>
         <p>Bạn có chắc muốn xóa sinh viên này không? Hành động này không thể hoàn tác.</p>
         <div class="dialog-btns">
@@ -520,21 +520,21 @@
 
     <div class="stats-bar">
         <div class="stat-card">
-            <div class="stat-icon blue"></div>
+            <div class="stat-icon blue">🎓</div>
             <div>
                 <div class="stat-label">Tổng sinh viên</div>
                 <div class="stat-value" id="stat-total">0</div>
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon purple"></div>
+            <div class="stat-icon purple">👨</div>
             <div>
                 <div class="stat-label">Sinh viên Nam</div>
                 <div class="stat-value" id="stat-nam">0</div>
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon green"></div>
+            <div class="stat-icon green">👩</div>
             <div>
                 <div class="stat-label">Sinh viên Nữ</div>
                 <div class="stat-value" id="stat-nu">0</div>
@@ -566,7 +566,7 @@
             <tbody id="studentTable">
             <tr><td colspan="6">
                 <div class="empty-state">
-                    <span class="emoji"></span>
+                    <span class="emoji">📭</span>
                     Đang tải dữ liệu...
                 </div>
             </td></tr>
@@ -607,8 +607,8 @@
         </div>
 
         <div class="form-actions">
-            <button class="btn-cancel" onclick="resetForm()"> Hủy</button>
-            <button class="btn-save" onclick="saveStudent()"> Lưu sinh viên</button>
+            <button class="btn-cancel" onclick="resetForm()">↩ Hủy</button>
+            <button class="btn-save" onclick="saveStudent()">💾 Lưu sinh viên</button>
         </div>
     </div>
 
@@ -640,7 +640,7 @@ function renderTable(data) {
     if (!data.length) {
         tbody.innerHTML = `<tr><td colspan="6">
             <div class="empty-state">
-                <span class="emoji"></span>
+                <span class="emoji">🔍</span>
                 Không tìm thấy sinh viên nào
             </div>
         </td></tr>`;
@@ -659,9 +659,9 @@ function renderTable(data) {
             <td class="td-actions">
                 <div class="action-wrap">
                     <button class="btn-icon btn-edit"
-                        onclick="editStudent(${s.id}, '${s.name}', '${s.email}', ${s.age}, '${s.gender}')">Sửa</button>
+                        onclick="editStudent(${s.id}, '${s.name}', '${s.email}', ${s.age}, '${s.gender}')">✏️</button>
                     <button class="btn-icon btn-del"
-                        onclick="openDialog(${s.id})"></button>
+                        onclick="openDialog(${s.id})">🗑</button>
                 </div>
             </td>
         </tr>`;
